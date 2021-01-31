@@ -1,0 +1,23 @@
+#!/bin/sh
+
+FAC=local1
+
+if [ $# -ne 2 ]; then
+	echo "Usage: $0 <name> <cmd>" 1>&2
+	exit 3
+fi
+
+check_name="$1"
+check_cmd="$2"
+
+s=`$check_cmd 2>&1`
+r=$?
+s=`echo "$s" | tr \\012 ' '`
+if [ $r -eq 0 ]; then
+	logger -p "$FAC.info" "SMON CHECK ${check_name} OK ${s}"
+else
+	logger -p "$FAC.info" "SMON CHECK ${check_name} CRITICAL ${s}"
+fi
+
+# we're going to be run from cron and we don't want to alarm cron...
+exit 0
