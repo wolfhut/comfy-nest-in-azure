@@ -7,6 +7,9 @@ period.
 *I do not do monitoring this way anymore. This is included for historical
 interest only.*
 
+Smon stands for Simple Monitoring. The goal was to get monitoring going
+without writing a lot of code.
+
 Example cron entries for doing it this way:
 
 ```
