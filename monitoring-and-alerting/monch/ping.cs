@@ -47,7 +47,6 @@ namespace Monch
                 }
             }
 
-            var reportTasks = new List<Task>();
             foreach (var familyAndTasks in pingTasks) {
                 var dims = new List<(string, string)> {
                     ("family", familyAndTasks.Key)
@@ -75,30 +74,23 @@ namespace Monch
                     }
                 }
     
-                reportTasks.Add(
-                    reporter.Report(
-                        dims, "reachability",
-                        count,
-                        (numReachable < count) ? 0 : 1,
-                        (numReachable > 0) ? 1 : 0,
-                        numReachable));
-                reportTasks.Add(
-                    reporter.Report(
-                        dims, "loss",
-                        count,
-                        (numReachable > 0) ? 0 : 1,
-                        (numReachable < count) ? 1 : 0,
-                        count - numReachable));
+                reporter.Report(
+                    dims, "reachability",
+                    count,
+                    (numReachable < count) ? 0 : 1,
+                    (numReachable > 0) ? 1 : 0,
+                    numReachable);
+                reporter.Report(
+                    dims, "loss",
+                    count,
+                    (numReachable > 0) ? 0 : 1,
+                    (numReachable < count) ? 1 : 0,
+                    count - numReachable);
                 if (numReachable > 0) {
-                    reportTasks.Add(
-                        reporter.Report(
-                            dims, "rttMs",
-                            numReachable, minRtt, maxRtt, sumRtt));
+                    reporter.Report(
+                        dims, "rttMs",
+                        numReachable, minRtt, maxRtt, sumRtt);
                 }
-            }
-
-            foreach (var task in reportTasks) {
-                await task;
             }
         }
     }

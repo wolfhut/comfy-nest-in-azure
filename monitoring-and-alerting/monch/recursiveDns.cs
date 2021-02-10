@@ -117,7 +117,6 @@ namespace Monch
                 }
             }
 
-            var reportTasks = new List<Task>();
             foreach (var familyProtoTasks in queryTasks) {
                 var dims = new List<(string, string)> {
                     ("family", familyProtoTasks.Key.Item1),
@@ -144,17 +143,12 @@ namespace Monch
                     }
                 }
     
-                reportTasks.Add(
-                    reporter.Report(
-                        dims, "success",
-                        names.Count,
-                        (numSuccess < names.Count) ? 0 : 1,
-                        (numSuccess > 0) ? 1 : 0,
-                        numSuccess));
-            }
-
-            foreach (var task in reportTasks) {
-                await task;
+                reporter.Report(
+                    dims, "success",
+                    names.Count,
+                    (numSuccess < names.Count) ? 0 : 1,
+                    (numSuccess > 0) ? 1 : 0,
+                    numSuccess);
             }
         }
     }

@@ -15,27 +15,36 @@ namespace Monch
         public class BaseConfiguration
         {
             public string Resource { get; set; }
+            public string ResourceRegion { get; set; }
             public string ServiceName { get; set; }
             public bool DryRun { get; set; }
+            public bool Verbose { get; set; }
             public int SpreadOutOver { get; set; }
         }
-        static MonchReporter makeReporter(BaseConfiguration baseConfig,
-                                          string ns)
+        static async Task<MonchReporter> makeReporter(
+            BaseConfiguration baseConfig, string metricsNamespace)
         {
-            string resourceId = baseConfig.Resource;
-            if (resourceId == null) {
-                // This won't actually work in real life, but if they're just
-                // trying something out on the command line with -n, let's make
-                // it work for them.
-                resourceId = "unknown";
-            }
+            MonchReporter reporter;
             if (baseConfig.DryRun) {
-                return new MonchReporterDryRun(
-                               resourceId, baseConfig.ServiceName, ns);
+                reporter = new MonchReporterDryRun(metricsNamespace,
+                                                   baseConfig.Verbose);
             } else {
-                return new MonchReporterAzure(
-                               resourceId, baseConfig.ServiceName, ns);
+                if (baseConfig.Resource == null) {
+                    throw new Exception("Missing --resource");
+                } else if (!baseConfig.Resource.StartsWith('/')) {
+                    throw new Exception("Resource ID must start with /");
+                }
+                if (baseConfig.ResourceRegion == null) {
+                    throw new Exception("Missing --resource-region");
+                }
+                reporter = new MonchReporterAzure(baseConfig.ResourceRegion,
+                                                  baseConfig.Resource,
+                                                  baseConfig.ServiceName,
+                                                  metricsNamespace,
+                                                  baseConfig.Verbose);
             }
+            await reporter.Initialize();
+            return reporter;
         }
 
         public class PingConfiguration
@@ -48,11 +57,12 @@ namespace Monch
             BaseConfiguration baseConfig,
             PingConfiguration pingConfig)
         {
-            var reporter = makeReporter(baseConfig, "ping");
+            var reporter = await makeReporter(baseConfig, "ping");
             await MonchPing.Check(reporter,
                                   await getAddressesByFamily(pingConfig.Host),
                                   pingConfig.Count, pingConfig.Timeout,
                                   baseConfig.SpreadOutOver);
+            await reporter.Finalize();
             return 0;
         }
 
@@ -66,12 +76,13 @@ namespace Monch
             BaseConfiguration baseConfig,
             RecursiveDnsConfiguration recursiveDnsConfig)
         {
-            var reporter = makeReporter(baseConfig, "recursiveDns");
+            var reporter = await makeReporter(baseConfig, "recursiveDns");
             await MonchRecursiveDns.Check(
                       reporter,
                       await getAddressesByFamily(recursiveDnsConfig.Host),
                       recursiveDnsConfig.Name, recursiveDnsConfig.Timeout,
                       baseConfig.SpreadOutOver);
+            await reporter.Finalize();
             return 0;
         }
 
@@ -135,12 +146,20 @@ namespace Monch
                         description: "Resource ID to report stats on"));
             rootCommand.Add(
                 new Option<string>(
+                        "--resource-region",
+                        description: "Azure region of the given resource, e.g. westus2"));
+            rootCommand.Add(
+                new Option<string>(
                         "--service-name",
                         description: "Optional description, if resource is insufficiently specific"));
             rootCommand.Add(
                 new Option<bool>(
                         new string[] { "--dry-run", "-n" },
                         "Do not actually report statistics to Azure"));
+            rootCommand.Add(
+                new Option<bool>(
+                        new string[] { "--verbose", "-v" },
+                        "Print extra information to stdout"));
             rootCommand.Add(
                 new Option<int>(
                         "--spread-out-over",
