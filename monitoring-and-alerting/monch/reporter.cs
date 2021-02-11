@@ -117,6 +117,9 @@ namespace Monch
         private readonly DateTimeOffset time;
         private readonly string svcName;
         private readonly string metricsUrl;
+        private readonly string authResourceId;
+        private readonly string authClientId;
+        private readonly string authObjectId;
         private string authToken;
 
         class AuthResponse
@@ -175,13 +178,17 @@ namespace Monch
             public MetricsRequestData Data { get; set; }
         }
 
-        public MonchReporterAzure(string region, string resourceId,
-                                  string svcName, string metricsNamespace,
-                                  bool verbose) :
+        public MonchReporterAzure(string authResourceId, string authClientId,
+                                  string authObjectId, string region,
+                                  string resourceId, string svcName,
+                                  string metricsNamespace, bool verbose) :
             base(metricsNamespace, verbose)
         {
             time = DateTimeOffset.UtcNow;
             this.svcName = svcName;
+            this.authResourceId = authResourceId;
+            this.authClientId = authClientId;
+            this.authObjectId = authObjectId;
 
             // The resource ID will start with a slash, so we shouldn't put in
             // a slash of our own.
@@ -200,7 +207,16 @@ namespace Monch
             // with "monitoring.azure.com" in place of what they used in the
             // example. (I took "monitoring.azure.com" from the docs for
             // publishing custom metrics)
-            const string authUrl = "http://169.254.169.254/metadata/identity/oauth2/token?api-version=2018-02-01&resource=https://monitoring.azure.com/";
+            string authUrl = "http://169.254.169.254/metadata/identity/oauth2/token?api-version=2018-02-01&resource=https://monitoring.azure.com/";
+            if (authResourceId != null) {
+                authUrl += $"&mi_res_id={authResourceId}";
+            }
+            if (authClientId != null) {
+                authUrl += $"&client_id={authClientId}";
+            }
+            if (authObjectId != null) {
+                authUrl += $"&object_id={authObjectId}";
+            }
             var req = new HttpRequestMessage(HttpMethod.Get, authUrl);
             req.Headers.Add("Metadata", "true");
 

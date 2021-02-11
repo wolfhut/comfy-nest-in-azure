@@ -14,6 +14,9 @@ namespace Monch
     {
         public class BaseConfiguration
         {
+            public string AuthResource { get; set; }
+            public string AuthClientId { get; set; }
+            public string AuthObjectId { get; set; }
             public string Resource { get; set; }
             public string ResourceRegion { get; set; }
             public string ServiceName { get; set; }
@@ -37,7 +40,10 @@ namespace Monch
                 if (baseConfig.ResourceRegion == null) {
                     throw new Exception("Missing --resource-region");
                 }
-                reporter = new MonchReporterAzure(baseConfig.ResourceRegion,
+                reporter = new MonchReporterAzure(baseConfig.AuthResource,
+                                                  baseConfig.AuthClientId,
+                                                  baseConfig.AuthObjectId,
+                                                  baseConfig.ResourceRegion,
                                                   baseConfig.Resource,
                                                   baseConfig.ServiceName,
                                                   metricsNamespace,
@@ -140,6 +146,18 @@ namespace Monch
         {
             var rootCommand = new RootCommand();
             rootCommand.Description = "Check a thing";
+            rootCommand.Add(
+                new Option<string>(
+                        "--auth-resource",
+                        description: "Resource ID of the Managed Identity to authenticate as"));
+            rootCommand.Add(
+                new Option<string>(
+                        "--auth-client-id",
+                        description: "Client ID of the Managed Identity to authenticate as"));
+            rootCommand.Add(
+                new Option<string>(
+                        "--auth-object-id",
+                        description: "Object ID of the Managed Identity to authenticate as"));
             rootCommand.Add(
                 new Option<string>(
                         "--resource",
