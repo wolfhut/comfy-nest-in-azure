@@ -56,6 +56,12 @@ Identity, and when you get a token, the metadata server doesn't know which
 Managed Identity to feed you. So you have to tell it explicitly which one
 you want.
 
+The `--service-name` is just a human readable string to associate with the
+thing you're pinging. In this case, since I'm pinging my home machine, I
+set it to `home-machine`. It's optional, but recommended in cases where
+there's no good Resource ID to use so you have to use the Log Analytics
+workspace's resource ID.
+
 Note that monch is capable of doing DNS lookups on hostnames, and if it finds
 both an A record and a AAAA record on a hostname you give it, it'll try both.
 So you may be able to get away with things like:
