@@ -41,6 +41,21 @@ I have a [slightly more sophisticated version](monch/) of the same basic
 idea, which I'm hoping will work better but retain the basic simplicity.
 At heart, it's just a bunch of cron jobs. And I love that about it.
 
+## Why a VM? Why not an Azure Functions App?
+
+I would *love* it if I could put this in Azure Functions. It would handle
+the scheduling and everything.
+
+(Or maybe a container, but containers are
+[expensive](../rationale-and-motivations/post-scarcity.md#but).
+
+I don't think either of those would actually work, because I doubt there's
+much in the way of ICMP connectivity from either one. There might even be
+IPv6 issues. I'm not sure.
+
+Anyway -- it does seem to be a crucial feature of this, that it be running
+in a VM with a public IP address. Which is okay, all things considered.
+
 ## Summary
 
 So the plan is:
