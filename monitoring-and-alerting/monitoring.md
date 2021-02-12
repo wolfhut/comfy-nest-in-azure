@@ -13,6 +13,7 @@
    - the Log Analytics workspace which is going to hold the spillover metrics
      that don't have a more specific Resource ID to attach to
 4. The VM needs to have a public IPv4 and IPv6 address attached to it.
+   (Standard-sku, because VMs don't work with basic-sku)
 5. The VM needs to have [the .net
    SDK](https://docs.microsoft.com/en-us/dotnet/core/install/) installed on it.
    This is so that you can build Monch. See below.
