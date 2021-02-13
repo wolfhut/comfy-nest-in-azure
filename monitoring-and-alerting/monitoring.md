@@ -30,7 +30,9 @@ if they don't.
 Regarding number 4, it's because we need ICMP to be able to do pings, and
 the NAT that Azure gives you by default, doesn't pass ICMP. It should be
 locked down tight with a security group that doesn't allow anything
-inbound except ICMP.
+inbound. (You'd think the security group would need ICMP inbound. It
+seems to work just as well without, actually. It seems to work with
+just the default "nothing extra allowed" security group rules)
 
 ## Setup
 
@@ -45,8 +47,8 @@ sudo crontab -e -u monitoring
 ```
 
 ```
-* * * * * /usr/local/bin/monch --auth-client-id d73d436e-bcfb-468d-bd70-a227a27cb462 --resource /resource/id/of/dns/resolver/vm --resource-region westus2 recursive-dns 1.2.3.4 > /dev/null 2>&1
-* * * * * /usr/local/bin/monch --auth-client-id d73d436e-bcfb-468d-bd70-a227a27cb462 --resource /resource/id/of/dns/resolver/vm --resource-region westus2 recursive-dns 1::2 > /dev/null 2>&1
+* * * * * /usr/local/bin/monch --auth-client-id d73d436e-bcfb-468d-bd70-a227a27cb462 --resource /resource/id/of/dns/resolver/vm --resource-region westus2 recursive-dns 1.2.3.4 --name google.com --name microsoft.com --name apple.com --name wikipedia.org --name amazon.com --name reddit.com --name twitch.tv --name adobe.com --name netflix.com --name ebay.com > /dev/null 2>&1
+* * * * * /usr/local/bin/monch --auth-client-id d73d436e-bcfb-468d-bd70-a227a27cb462 --resource /resource/id/of/dns/resolver/vm --resource-region westus2 recursive-dns 1::2 --name google.com --name microsoft.com --name apple.com --name wikipedia.org --name amazon.com --name reddit.com --name twitch.tv --name adobe.com --name netflix.com --name ebay.com > /dev/null 2>&1
 * * * * * /usr/local/bin/monch --auth-client-id d73d436e-bcfb-468d-bd70-a227a27cb462 --resource /resource/id/of/log/analytics/workspace --resource-region westus2 --service-name home-machine ping 5.6.7.8 > /dev/null 2>&1
 * * * * * /usr/local/bin/monch --auth-client-id d73d436e-bcfb-468d-bd70-a227a27cb462 --resource /resource/id/of/log/analytics/workspace --resource-region westus2 --service-name home-machine ping 5::6 > /dev/null 2>&1
 ```
