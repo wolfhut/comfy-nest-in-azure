@@ -34,7 +34,7 @@ For each thing we want to alert on, we have to figure out two thresholds:
      downtime due to reboot, is 7% of 15 minutes or 20% of 5 minutes.
 
 | Thing | #datapoints/min | Is monitoring borked? | Is thing borked? |
-| --- | --- | --- | --- | --- |
+| --- | --- | --- | --- |
 | Recurs. DNS, both AFs combined | 40 | <1500/1hr | <85%/15m |
 | Home net reach. per AF | 10 | <500/1hr | <98%/15m warn, <50%/5m crit |
 
