@@ -2,7 +2,7 @@
 
 ## Machine size
 
-As far as I'm concerned, the only worthwhile size is B2ls. It's cheap
+As far as I'm concerned, the only worthwhile size is B1ls. It's cheap
 and it's got plenty of everything -- including plenty of memory, as long
 as you configure some swap.
 
@@ -18,7 +18,7 @@ Couple other things to note:
 * SSD is not worth it. Go for Standard HDD. The whole business about SSD
   qualifying you for a better SLA is, in my opinion, [FUD and completely
   bogus](../rationale/regions-load-balancers-slas.md).
-* If you go for the reserved instance pricing, a B2ls instance with Standard
+* If you go for the reserved instance pricing, a B1ls instance with Standard
   HDD is mind-buggeringly cheap. Which is awesome.
 
 ## Choice of operating system
