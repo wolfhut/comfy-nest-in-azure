@@ -41,10 +41,23 @@ indicate that both waagent and cloudinit both are fighting over the
 resource disk??)
 
 My fourth choice would be Ubuntu, because it's like Debian, just a little
-bit ickier. Fortunately, Ubuntu seems to be pretty well supported in Azure.
+bit (or a lot) ickier. Fortunately, Ubuntu seems to be pretty well supported
+in Azure.
 
 So I'm going with Ubuntu. Just a second while I get naked. Aaahhh. That's
 better.
+
+*Note:* There will be places where we run into Ubuntu brain damage. The
+fact that it comes by default with systemd-resolved enabled, is just one
+example. There are many others. Ubuntu is, by any objective measure, a
+terrible operating system. But that doesn't change the fact that it's the
+best supported by Azure, cloudinit Just Works (mostly, kind of) AAD
+authentication Just Works, and I think we just have to deal with its areas
+of brain damage as well as we can.
+
+The whole thing is a dumpster fire. I think the name of the game is to
+just carve out a relatively stable part of the dumpster fire, draw a box
+around it, and do the best we can within that box.
 
 ## Azure Active Directory integration
 
@@ -78,3 +91,15 @@ that needs to be done, can be done after the machine has booted.
 
 Do I wish that were different? Sure. But it ain't. [And really that's
 okay.](../rationale/no-arm-no-puppet-no-terraform.md)
+
+## What defines "well supported by Azure"?
+
+I'm defining "well supported by Azure", loosely, as consisting of the
+intersection between the sets of supported operating systems for the
+following:
+
+1. [Cloudinit](https://docs.microsoft.com/en-us/azure/virtual-machines/linux/using-cloud-init)
+2. [Azure Monitor
+   Agent](https://docs.microsoft.com/en-us/azure/azure-monitor/platform/agents-overview#supported-operating-systems)
+3. [AAD
+   authentication](https://docs.microsoft.com/en-us/azure/virtual-machines/linux/login-using-aad)

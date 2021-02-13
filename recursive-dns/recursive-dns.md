@@ -17,24 +17,67 @@ The reason for number 3 is we can't use a load balancer (for reasons discussed
 [here](../rationale-and-motivations/regions-load-balancers-slas.md#load-balancers)).
 So we're kind of stuck with the public IP addresses.
 
-## Setup
+## Strange things are afoot at the Circle K
 
-First install BIND: (note: you can check if there's any other package
-variants that might be relevant, by doing `apt search bind`)
+OK, this is a weird one. Ubuntu comes by default with systemd-resolved
+turned on. This completely buggers Unbound's ability to run with
+`interface-automatic: yes` because Unbound tries to bind to 0.0.0.0 port
+53, and it can't because bloody systemd already has it. Ugh. Why!?!
+
+* I was completely unsuccessful at my attempts to turn systemd-resolved off.
+* More recent versions of Unbound also have the ability to specify
+  interfaces by name, e.g. `interface: eth0`. The version Ubuntu comes
+  with in 2021, doesn't. Maybe next year this will be different.
+* Debian might, of course, be slightly better. [But,
+  well.](../virtual-machines/rationale-and-motivations.md#choice-of-operating-system)
+* My 2021 workaround for this, which is described below, is to give the VM a
+  static *private* IP address, and specify that in the configuration. Hopefully
+  2022 will bring different solutions. And doubtless new and exciting problems
+  of its own, withal. But hopefully some solutions too.
+
+# Setup
+
+So, given the above, here's what we gotta do first, as the very first step:
+* Go into the Network Interface, in the Azure portal
+* Go into the IP Configurations
+* Set both IPv4 and IPv6 to static
+* Note what the IP addresses are
+
+With that out of the way -- install Unbound:
+
 ```
-sudo apt install bind9
+sudo apt install unbound
 ```
 
-Now edit `/etc/bind/named.conf.options`:
-* Remove all listen-on's (you can leave ones that say "any", as they're
-  harmless, but might as well delete them)
-* Add into the options section:
-  ```
-      allow-recursion { any; };
-      max-cache-size 100M;
-  ```
+Now make a file `/etc/unbound/unbound.conf.d/wolfhut.conf`, with the
+following contents, substituting the correct IP addresses:
 
-There seems to be about 200 MB of free+buffer memory on an Ubuntu machine
-with nothing else running. So I figure 100 MB is about right for a cache.
-If each cache entry is a kilobyte, that's still 100,000 cached entries,
-which is... a lot. I don't see any need to push it any higher than that.
+```
+interface: 172.16.0.5
+interface: fdf0:9435:9f80::5
+
+interface: 127.0.0.1
+interface: ::1
+
+prefetch: yes
+prefetch-key: yes
+rrset-roundrobin: yes
+```
+
+See [this
+page](https://www.nlnetlabs.nl/documentation/unbound/howto-optimise/) for
+some configuration hints but also note that I have opted not to tweak
+much of anything. The default cache size is 4 MB which sounds tiny until
+you think about the fact that that's the size of the King James Bible.
+That's a lot! I think I'm fine with the defaults!
+
+More recent versions of unbound default to using qname minimization which I
+don't quite trust, but, well, who am I to judge. (The version that Ubuntu ships
+with defaults to off, so that's a problem for future-me to worry about,
+after Ubuntu catches up)
+
+It defaults to *not* using the 0x20 stuff, which I'm surprised by. I
+would have thought that would be on by default. But, again, I'm trusting
+its defaults. Maybe there are still enough broken servers out there that
+you still can't quite do 0x20 yet. (See the `use-caps-for-id` option in
+the config)
