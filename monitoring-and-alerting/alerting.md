@@ -35,8 +35,11 @@ For each thing we want to alert on, we have to figure out two thresholds:
 
 | Thing | #datapoints/min | Is monitoring borked? | Is thing borked? |
 | --- | --- | --- | --- |
-| Recurs. DNS, both AFs combined | 40 | <1500/1hr | <85%/15m |
+| Recurs. DNS, both AFs combined | 40 | <1500/1hr | <85%/15m warn |
 | Home net reach. per AF | 10 | <500/1hr | <98%/15m warn, <50%/5m crit |
+
+Recursive DNS servers are never critical, because there's two of them.
+If one of them breaks, that can be a "fix when it's convenient" thing.
 
 ## Setup
 
