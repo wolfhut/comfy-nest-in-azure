@@ -75,7 +75,10 @@ ID cannot be the ID of a subscription, or a resource group.
 
 So what to do about metrics that relate to pinging my home network?
 
-My workaround is to attach those metrics to the Log Analytics workspace,
-since I can't do it on the Subscription.
+I tried sticking them in a Log Analytics Workspace, and that more-or-less
+worked, but I had trouble creating alerts based on those metrics. It gave a
+funny nonsensical error message and didn't create the alerts. So my
+workaround-on-top-of-a-workaround, is to hang them off of the VM that
+is doing the checking.
 
 Shrug?

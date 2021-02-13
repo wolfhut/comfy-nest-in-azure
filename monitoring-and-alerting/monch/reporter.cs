@@ -17,7 +17,7 @@ using System.Threading.Tasks;
 // Within a Resource, there might (or might not) be lots of Services. This is
 // primarily because not everything we want to run checks against, even has an
 // Azure resource id. So the Resource might be something generic like the
-// resource id of the Log Analytics workspace. In that case, the Service would
+// resource id of the VM doing the checking. In that case, the Service would
 // be a string that lets you know what we're even looking at.
 //
 // (Because Azure does not directly have the concept of a Service, if we
