@@ -17,7 +17,7 @@ Couple other things to note:
 
 * SSD is not worth it. Go for Standard HDD. The whole business about SSD
   qualifying you for a better SLA is, in my opinion, [FUD and completely
-  bogus](../rationale/regions-load-balancers-slas.md).
+  bogus](../rationale-and-motivations/regions-load-balancers-slas.md).
 * If you go for the reserved instance pricing, a B1ls instance with Standard
   HDD is mind-buggeringly cheap. Which is awesome.
 
@@ -90,7 +90,7 @@ So I'm just doing the minimum, which is setting up swap. Anything else
 that needs to be done, can be done after the machine has booted.
 
 Do I wish that were different? Sure. But it ain't. [And really that's
-okay.](../rationale/no-arm-no-puppet-no-terraform.md)
+okay.](../rationale-and-motivations/no-arm-no-puppet-no-terraform.md)
 
 ## What defines "well supported by Azure"?
 
