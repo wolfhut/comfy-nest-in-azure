@@ -59,6 +59,9 @@ interface: fdf0:9435:9f80::5
 interface: 127.0.0.1
 interface: ::1
 
+access-control: 0.0.0.0/0 allow
+access-control: ::/0 allow
+
 prefetch: yes
 prefetch-key: yes
 rrset-roundrobin: yes
