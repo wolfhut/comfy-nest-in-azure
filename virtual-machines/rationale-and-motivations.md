@@ -51,7 +51,7 @@ better.
 fact that it comes by default with systemd-resolved enabled, is just one
 example. There are many others. Ubuntu is, by any objective measure, a
 terrible operating system. But that doesn't change the fact that it's the
-best supported by Azure, cloudinit Just Works (mostly, kind of) AAD
+best supported by Azure, cloudinit Just Works (mostly, kind of), AAD
 authentication Just Works, and I think we just have to deal with its areas
 of brain damage as well as we can.
 
