@@ -4,6 +4,7 @@
 
 1. [(doc)](../virtual-machines/virtual-machines.md) A virtual machine to run
    the monitoring from
+   * *NOTE:* See below discussion on VM sizing
 2. The VM needs to have a [User-Assigned Managed
    Identity](https://docs.microsoft.com/en-us/azure/active-directory/managed-identities-azure-resources/how-to-manage-ua-identity-portal). *Save the client
    ID.* You will need it later.
@@ -75,3 +76,31 @@ So you may be able to get away with things like:
 ```
 
 if the DNS name `hostname.of.dns.server` has both A and AAAA.
+
+# VM Sizing
+
+Unlike other VMs, the checker VM may actually need an instance size bigger
+than B1ls. The biggest problem is that, even with all the pre-compilation we
+do, we can't disable the C# JIT entirely. The C# runtime environment spins up
+a whole lot of infrastructure on process start. It's rather impressive and
+awesome, but it does not necessarily thrive in a "many short-lived executions
+kicked off from cron" context.
+
+I'm sure I could get away with a B1ls instance if I made it into a
+long-running daemon where the JIT would work in my favor instead of working
+against me.
+
+But I value the simplicity of how things are, this way. I'd rather just throw
+a little more money at the problem.
+
+Start with a B1ls instance and just see how it does. Don't trust `top` --
+the real thing to watch is the `CPU Credits Remaining` graph. This is where
+the "burstable" nature of the B1 series comes into the picture.
+
+Simple rule: If the derivative of `CPU Credits Remaining` is positive, you're
+fine. If the derivative is negative, change the instance size to B1s (or even
+B2s). Keep in mind the [instance size flexibility
+ratios](https://docs.microsoft.com/en-us/azure/virtual-machines/reserved-vm-instance-size-flexibility)
+when making the choice. Changing the instance size of a VM is a low-stress
+operation and does not require deleting and recreating the VM. So it's fine
+to have a "wait and see" approach.
