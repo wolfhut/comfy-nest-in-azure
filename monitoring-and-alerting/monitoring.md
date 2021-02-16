@@ -99,8 +99,10 @@ the "burstable" nature of the B1 series comes into the picture.
 
 Simple rule: If the derivative of `CPU Credits Remaining` is positive, you're
 fine. If the derivative is negative, change the instance size to B1s (or even
-B2s). Keep in mind the [instance size flexibility
+larger). Changing the instance size of a VM is a low-stress operation and does
+not require deleting and recreating the VM. So it's fine to have a "wait and
+see" approach. Do keep in mind the [instance size flexibility
 ratios](https://docs.microsoft.com/en-us/azure/virtual-machines/reserved-vm-instance-size-flexibility)
-when making the choice. Changing the instance size of a VM is a low-stress
-operation and does not require deleting and recreating the VM. So it's fine
-to have a "wait and see" approach.
+when making the choice, because B1s can take advantage of reservations
+you've bought for B1ls size, but B2ms cannot. (B2ms is a great deal, too.
+It's just not part of the same flexibility group as B1ls)

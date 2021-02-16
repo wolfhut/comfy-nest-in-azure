@@ -38,8 +38,7 @@ Here is how it was originally generated.
         <RuntimeIdentifier>REPLACE_ME</RuntimeIdentifier>
         <PublishSingleFile>true</PublishSingleFile>
         <PublishReadyToRun>true</PublishReadyToRun>
-        <DebugType>none</DebugType>
-        <Optimize>true</Optimize>
+        <DebugType>embedded</DebugType>
         <SelfContained>true</SelfContained>
    ```
    See [this
