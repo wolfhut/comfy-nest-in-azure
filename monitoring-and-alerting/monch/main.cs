@@ -23,6 +23,7 @@ namespace Monch
             public bool DryRun { get; set; }
             public bool Verbose { get; set; }
             public int SpreadOutOver { get; set; }
+            public int ReportingTimeout { get; set; }
         }
         static async Task<MonchReporter> makeReporter(
             BaseConfiguration baseConfig, string metricsNamespace)
@@ -43,6 +44,7 @@ namespace Monch
                 reporter = new MonchReporterAzure(baseConfig.AuthResource,
                                                   baseConfig.AuthClientId,
                                                   baseConfig.AuthObjectId,
+                                                  baseConfig.ReportingTimeout,
                                                   baseConfig.ResourceRegion,
                                                   baseConfig.Resource,
                                                   baseConfig.ServiceName,
@@ -181,8 +183,13 @@ namespace Monch
             rootCommand.Add(
                 new Option<int>(
                         "--spread-out-over",
-                        getDefaultValue: () => 50000,
+                        getDefaultValue: () => 45000,
                         description: "Spread out checks over the given number of milliseconds, if supported by the module"));
+            rootCommand.Add(
+                new Option<int>(
+                        "--reporting-timeout",
+                        getDefaultValue: () => 5000,
+                        description: "Timeout in milliseconds for authenticating or reporting metrics"));
 
             var pingCommand = new Command("ping");
             pingCommand.Add(
@@ -193,7 +200,7 @@ namespace Monch
             pingCommand.Add(
                 new Option<int>(
                         "--timeout",
-                        getDefaultValue: () => 20000,
+                        getDefaultValue: () => 15000,
                         description: "Timeout per ping in milliseconds"));
             pingCommand.Add(
                 new Argument<string>(
@@ -206,10 +213,13 @@ namespace Monch
             rootCommand.Add(pingCommand);
 
             var recursiveDnsCommand = new Command("recursive-dns");
+            // Short timeout by default because clients are gonna have
+            // equally short timeouts. If a query doesn't succeed in 1 second,
+            // it basically counts as a failure regardless.
             recursiveDnsCommand.Add(
                 new Option<int>(
                         "--timeout",
-                        getDefaultValue: () => 10000,
+                        getDefaultValue: () => 1000,
                         description: "Timeout per query in milliseconds"));
             recursiveDnsCommand.Add(
                 new Argument<string>(

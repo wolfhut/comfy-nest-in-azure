@@ -113,7 +113,7 @@ namespace Monch
 
     public class MonchReporterAzure : MonchReporter
     {
-        private static readonly HttpClient httpClient = new HttpClient();
+        private readonly HttpClient httpClient;
         private readonly DateTimeOffset time;
         private readonly string svcName;
         private readonly string metricsUrl;
@@ -179,9 +179,10 @@ namespace Monch
         }
 
         public MonchReporterAzure(string authResourceId, string authClientId,
-                                  string authObjectId, string region,
-                                  string resourceId, string svcName,
-                                  string metricsNamespace, bool verbose) :
+                                  string authObjectId, int reportingTimeout,
+                                  string region, string resourceId,
+                                  string svcName, string metricsNamespace,
+                                  bool verbose) :
             base(metricsNamespace, verbose)
         {
             time = DateTimeOffset.UtcNow;
@@ -189,6 +190,8 @@ namespace Monch
             this.authResourceId = authResourceId;
             this.authClientId = authClientId;
             this.authObjectId = authObjectId;
+            httpClient = new HttpClient();
+            httpClient.Timeout = TimeSpan.FromMilliseconds(reportingTimeout);
 
             // The resource ID will start with a slash, so we shouldn't put in
             // a slash of our own.
