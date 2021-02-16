@@ -95,7 +95,7 @@ a little more money at the problem.
 
 Start with a B1ls instance and just see how it does. Don't trust `top` --
 the real thing to watch is the `CPU Credits Remaining` graph. This is where
-the "burstable" nature of the B1 series comes into the picture.
+the "burstable" nature of the B series comes into the picture.
 
 Simple rule: If the derivative of `CPU Credits Remaining` is positive, you're
 fine. If the derivative is negative, change the instance size to B1s (or even
