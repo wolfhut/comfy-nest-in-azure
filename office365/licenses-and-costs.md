@@ -18,3 +18,9 @@ license, and give yourself one of the other two.
 I'm not sure exactly why the difference in cost between Business Basic and
 E1. They seem more or less identical to me. I currently have E1 for myself
 but I might have to look into switching!
+
+I have found it useful to have a "daemon" account with an F1 license
+that doesn't get used for anything except sending out automated emails.
+It's $4/month whereas the cheapest Sendgrid subscription is $10/month,
+so it's a win there. And anything that has a need to send emails, can
+share the credentials.

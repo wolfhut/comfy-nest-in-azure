@@ -142,3 +142,7 @@ Each of them can be configured with 3 fault domains and 3 update domains.
 That will work even if there's only 2 machines in each set. If there's 2
 machines in the set, then the first two created will be in zones A and B,
 then the next two will be in zones C and A. It still works out.
+
+(Note that for things that there will only ever be one of, NAT rules are
+a convenient shortcut in a Load Balancer. You don't have to create a whole
+backend pool, a NAT rule works just fine)
