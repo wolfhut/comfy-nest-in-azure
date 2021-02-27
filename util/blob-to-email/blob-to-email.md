@@ -33,10 +33,14 @@ Go into Configuration, and add the following new Application Settings:
 * `BCC_ADDRS`: Comma-separated email addresses to send notifications to, as bcc
 * `GREETING`: A string like perhaps `New blobs for your attention`
 * `LINK_VALIDITY_DAYS`: How many days the link given in the email should be
-  valid for, e.g. `365`, or `180`
+  valid for, e.g. `365`, or `180`, or even `36500`.
 
 Both `TO_ADDRS` and `BCC_ADDRS` are optional, but you really should specify
 at least one, otherwise it's kind of pointless!
+
+(You can also specify `OVERRIDE_CONTENT_DISPOSITION` if you want, but since
+browsers default to "inline" you'd only need to specify it if you wanted
+it to be "attachment")
 
 Create a new Function:
 * Type: blob trigger

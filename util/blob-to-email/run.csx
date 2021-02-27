@@ -25,6 +25,8 @@ static readonly string bccAddrsCommaSeparated =
     Environment.GetEnvironmentVariable("BCC_ADDRS");
 static readonly string greeting =
     Environment.GetEnvironmentVariable("GREETING");
+static readonly string overrideContentDisposition =
+    Environment.GetEnvironmentVariable("OVERRIDE_CONTENT_DISPOSITION");
 
 const string o365ServerName = "smtp.office365.com";
 const int o365ServerPort = 587;
@@ -62,6 +64,9 @@ public static async Task Run(Stream blobData, string path, ILogger log)
             ExpiresOn = DateTimeOffset.UtcNow.AddDays(linkValidityDays),
         };
     blobSasBuilder.SetPermissions(BlobSasPermissions.Read);
+    if (overrideContentDisposition != null) {
+        blobSasBuilder.ContentDisposition = overrideContentDisposition;
+    }
     Uri uri = blobClient.GenerateSasUri(blobSasBuilder);
 
     log.LogInformation($"Sending notification for {uri}");
